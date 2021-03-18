@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{https://apps.bdimg.com/libs/jquerymobile/1.4.5/jquery.mobile-1.4.5.min.css}">
+    <script th:src="@{https://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js}"></script>
+    <script th:src="@{https://apps.bdimg.com/libs/jquerymobile/1.4.5/jquery.mobile-1.4.5.min.js}"></script>
+    <script>
+        $(document).ready(function () {
+            $("a[name='tap']").click(function () {
+               window.location.href = "/home?groupName="+$(this).text();
+            });
+            $('select').change(function () {
+                var url = "/filpSwitch?groupName="+$('#title').val()+"&switchName="+$(this).attr("id")+"&status="+$(this).val();
+                    $.get(url, function(result){
+                     });
+                });
+        });
+
+
+    </script>
+</head>
+<body>
+
+<div data-role="page" id="pageone">
+    <div data-role="header">
+        <h1>智能家居管理系统</h1>
+    </div>
+
+    <div data-role="main" class="ui-content">
+        <input th:value="${title}" id="title" type="hidden"/>
+        <div data-role="navbar">
+            <ul>
+                <li th:each="name:${groupName}">
+                    <a href="#" th:text="${name}" name="tap" th:class="${name}==${title}?ui-btn-active">厨房</a>
+                </li>
+            </ul>
+        </div>
+        <div data-role="main" class="ui-content">
+            <div th:each="e,l:${list}">
+                <label th:for="${e.switchName}" th:text="${e.switchName}"></label>
+                <select name="flip" th:id="${e.switchName}" data-role="flipswitch" data-theme="b">
+                    <option value="false" th:selected="${e.status}">Off</option>
+                    <option value="true" th:selected="${e.status}">On</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
