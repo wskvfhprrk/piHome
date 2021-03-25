@@ -34,7 +34,7 @@ public class Gpio {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //你电平
+            //低电平
             pin.low();
         }
         //pin关闭，设置状态为low
