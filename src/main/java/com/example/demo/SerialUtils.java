@@ -27,6 +27,8 @@ public class SerialUtils {
     private static String inCom;
 
     private static String outCom;
+    @Autowired
+    private Gpio gpioService;
 
     @Value("${io.inCom}")
     public void setInCom(String inCom) {
@@ -47,9 +49,12 @@ public class SerialUtils {
      * @param hexString
      * @return
      */
-    public synchronized String sendHex(String hexString) throws IOException {
+    public synchronized String sendHex(String hexString) throws IOException{
+        log.info("hexString:{}",hexString);
         //超过2分钟不再发送了
         redisTemplate.opsForValue().set(OUT_HEX, hexString.substring(6, 14), Duration.ofMillis(2000L));
+        //发送命令后报警一声
+        gpioService.sendSound(1);
         return send(hexString);
     }
 

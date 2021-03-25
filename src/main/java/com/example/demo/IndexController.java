@@ -61,11 +61,11 @@ public class IndexController {
             Map map = list.get(0);
             if (vo.isStatus()) {
                 log.info("开信号");
-                serialUtils.sendHex(map.get("openInHex").toString());
+                serialUtils.sendHex(map.get("openOutHex").toString());
                 ioService.updateStastus(map, true);
             } else {
                 log.info("关信号");
-                serialUtils.sendHex(map.get("closeInHex").toString());
+                serialUtils.sendHex(map.get("closeOutHex").toString());
                 ioService.updateStastus(map, true);
             }
             return "发送命令成功！";
