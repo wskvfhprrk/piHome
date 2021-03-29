@@ -16,7 +16,9 @@ spring:
     suffix: .html  #后缀名
   #sqlite连接
   datasource:
-    url: jdbc:sqlite:C:/sqlite/piHome.db
+    #url连接根据数据库实际地址建立
+#    url: jdbc:sqlite:C:/sqlite/piHome.db
+    url: jdbc:sqlite:/home/pi/piHome.db
     driver-class-name: org.sqlite.JDBC
 
 # MyBatis配置
