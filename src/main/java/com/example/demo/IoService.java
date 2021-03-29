@@ -32,7 +32,7 @@ public class IoService {
 
     void add(IoEntity entity) {
         //缓存中添加
-       dao.save(entity);
+        dao.save(entity);
     }
 
     Result addAll(String str) {
@@ -75,7 +75,7 @@ public class IoService {
         }
         //添加前先删除
         dao.deleteAll();
-        list.stream().forEach(l->dao.save(l));
+        list.stream().forEach(l -> dao.save(l));
         return Result.ok();
     }
 
@@ -144,30 +144,34 @@ public class IoService {
                     log.info("已经发送红外信号............");
                 }
                 String inHex1 = event.getHexByteString().replaceAll(",", "");
+                IoEntity ioEntity;
                 if (inHex1 != null) {
-                    IoEntity ioEntity = dao.selectByOpenInHex(inHex1);
-                    if (ioEntity !=null) {
-                        //发送数据
-                        try {
-                            String outHex = "";
-                            //如果是打开开关信号
-                            if (ioEntity.getOpenInHex().equals(inHex1)) {
-                                outHex = ioEntity.getOpenOutHex();
-                                //把其状态更改为打开
-                                ioEntity.setStatus(true);
-                                dao.updateStatus(ioEntity);
-                            } else { //否则为关闭开关信息
-                                outHex = ioEntity.getCloseOutHex();
-                                //把其状态更改为关闭
-                                ioEntity.setStatus(false);
-                                dao.updateStatus(ioEntity);
-                            }
-                            serialUtils.sendHex(outHex);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                    ioEntity = dao.selectByOpenInHex(inHex1);
+                    if (ioEntity != null) {
+                    } else {
+                        ioEntity = dao.selectByCloseInHex(inHex1);
+                    }
+                    //发送数据
+                    try {
+                        String outHex = "";
+                        //如果是打开开关信号
+                        if (ioEntity.getOpenInHex().equals(inHex1)) {
+                            outHex = ioEntity.getOpenOutHex();
+                            //把其状态更改为打开
+                            ioEntity.setStatus(true);
+                            dao.updateStatus(ioEntity);
+                        } else { //否则为关闭开关信息
+                            outHex = ioEntity.getCloseOutHex();
+                            //把其状态更改为关闭
+                            ioEntity.setStatus(false);
+                            dao.updateStatus(ioEntity);
                         }
+                        serialUtils.sendHex(outHex);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

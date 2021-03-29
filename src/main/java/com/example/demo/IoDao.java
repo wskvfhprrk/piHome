@@ -18,6 +18,9 @@ public interface IoDao {
     @Select("select id,openInHex, closeInHex, groupName, switchName, status, openOutHex, closeOutHex, openInHex from piHome WHERE piHome.openInHex = #{openInHex}")
     IoEntity selectByOpenInHex(String openInHex);
 
+    @Select("select id,openInHex, closeInHex, groupName, switchName, status, openOutHex, closeOutHex, openInHex from piHome WHERE piHome.closeInHex = #{closeInHex}")
+    IoEntity selectByCloseInHex(String closeInHex);
+
     @Select("INSERT INTO piHome (openInHex, closeInHex, groupName, switchName, status, openOutHex, closeOutHex, openInHex) " +
             "VALUES (#{openInHex}, #{closeInHex}, #{groupName}, #{switchName}, #{status}, #{openOutHex}, #{closeOutHex}, #{openInHex})")
     void save(IoEntity entity);

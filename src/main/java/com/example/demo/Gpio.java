@@ -15,12 +15,12 @@ public class Gpio {
      * @param num 响几声
      * @throws InterruptedException
      */
+    // 创建gpio控制器——实用了单例模式的工厂类
+    final GpioController gpio = GpioFactory.getInstance();
+    // gpio引脚#01作为输出引脚并打开——RaspiPin.GPIO_01为第18针
+    final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "sound", PinState.LOW);
     public void sendSound(int num)  {
-        // 创建gpio控制器——实用了单例模式的工厂类
-        final GpioController gpio = GpioFactory.getInstance();
-        // gpio引脚#01作为输出引脚并打开——RaspiPin.GPIO_01为第18针
-        final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "sound", PinState.LOW);
-        for (int i = 0; i < num; i++) {
+       for (int i = 0; i < num; i++) {
             //声音100毫秒短催较好
             try {
                 Thread.sleep(100);
