@@ -40,7 +40,7 @@ public class IoController {
     }
 
     @PostMapping("csv")
-    public Result csv(){
+    public Result csv() {
         return Result.ok();
     }
 
@@ -73,7 +73,7 @@ public class IoController {
     })
     @GetMapping("{inHex}")
     public Result getByInHex(@PathVariable String inHex) {
-        Result<Map> mapResult = ioService.selectByInHex(inHex);
+        Result<IoEntity> mapResult = ioService.selectByInHex(inHex);
         return mapResult;
     }
 

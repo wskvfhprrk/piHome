@@ -12,6 +12,9 @@ import java.io.Serializable;
  */
 @Data
 public class IoEntity implements Serializable {
+
+    private int id;
+
     /**
      * 输入open的红外信号(主键)
      */

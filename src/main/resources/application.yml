@@ -7,8 +7,6 @@ io:
   #信号输出"/dev/ttyUSB0"
   outCom: "/dev/ttyUSB0"
 spring:
-  redis:
-    port: 6379
   thymeleaf:
     enabled: true  #开启thymeleaf视图解析
     encoding: utf-8  #编码
@@ -16,3 +14,15 @@ spring:
     cache: false  #是否使用缓存
     mode: HTML  #严格的HTML语法模式
     suffix: .html  #后缀名
+  #sqlite连接
+  datasource:
+    url: jdbc:sqlite:C:/sqlite/piHome.db
+    driver-class-name: org.sqlite.JDBC
+
+# MyBatis配置
+mybatis:
+  mapper-locations: classpath*:io/parcelx/**/mapper/xml/**.xml
+  type-aliases-package: io.parcelx
+  configuration:
+    use-generated-keys: true
+    map-underscore-to-camel-case: true

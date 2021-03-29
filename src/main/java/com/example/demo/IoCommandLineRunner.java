@@ -21,8 +21,8 @@ public class IoCommandLineRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         //启动时启动
-        ioService.commandLine(null);
+//        ioService.commandLine(null);
         //启动后报警两声
-        gpioService.sendSound(2);
+//        gpioService.sendSound(2);
     }
 }

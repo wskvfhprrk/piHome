@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 public class IndexController {
 
     @Autowired
-    private IoService ioService;
+    private IoDao dao;
     @Autowired
     private SerialUtils serialUtils;
 
@@ -33,8 +33,8 @@ public class IndexController {
          * 3、如果带了所有参数，表示点击事件。
          */
         //
-        List<Map> all = ioService.getAll();
-        List<String> groupName = all.stream().map(map -> map.get("groupName").toString()).distinct().collect(Collectors.toList());
+        List<IoEntity> all = dao.selectAll();
+        List<String> groupName = all.stream().map(map -> map.getGroupName()).distinct().collect(Collectors.toList());
         String title;
         //没有给标题的时候
         if (vo == null || vo.getGroupName() == null || vo.getGroupName().length() == 0) {
@@ -44,7 +44,7 @@ public class IndexController {
         }
         model.addAttribute("title", title);
         model.addAttribute("groupName", groupName);
-        List<Map> list = all.stream().filter(map -> map.get("groupName").toString().equals(title)).collect(Collectors.toList());
+        List<IoEntity> list = all.stream().filter(map ->map.getGroupName().equals(title)).collect(Collectors.toList());
         model.addAttribute("list", list);
         //如果开关名称和状态都有表示点击事件
         return "home";
@@ -53,20 +53,22 @@ public class IndexController {
     @RequestMapping("filpSwitch")
     @ResponseBody
     public String filpSwitch(HomeVo vo) throws IOException {
-        List<Map> all = ioService.getAll();
-        List<Map> list = all.stream().filter(map -> map.get("groupName").toString().equals(vo.getGroupName()) && map.get("switchName").toString().equals(vo.getSwitchName())).collect(Collectors.toList());
+        List<IoEntity> all = dao.selectAll();
+        List<IoEntity> list = all.stream().filter(map -> map.getGroupName().equals(vo.getGroupName()) && map.getSwitchName().equals(vo.getSwitchName())).collect(Collectors.toList());
         if (list.isEmpty()) {
             return "没有此按纽命令！";
         } else {
-            Map map = list.get(0);
+            IoEntity entity= list.get(0);
             if (vo.isStatus()) {
                 log.info("开信号");
-                serialUtils.sendHex(map.get("openOutHex").toString());
-                ioService.updateStastus(map, true);
+                serialUtils.sendHex(entity.getOpenOutHex());
+                entity.setStatus(true);
+                dao.updateStatus(entity);
             } else {
                 log.info("关信号");
-                serialUtils.sendHex(map.get("closeOutHex").toString());
-                ioService.updateStastus(map, true);
+                serialUtils.sendHex(entity.getCloseOutHex());
+                entity.setStatus(false);
+                dao.updateStatus(entity);
             }
             return "发送命令成功！";
         }

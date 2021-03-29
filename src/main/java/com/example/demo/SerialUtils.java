@@ -23,7 +23,6 @@ import java.time.Duration;
 public class SerialUtils {
 
 
-    public static final String OUT_HEX = "outHex";
     private static String inCom;
 
     private static String outCom;
@@ -41,7 +40,7 @@ public class SerialUtils {
     }
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private TempDao dao;
 
     /**
      * 发送16进制数据——加锁实行单线程，一次处理一个发送命令
@@ -52,7 +51,7 @@ public class SerialUtils {
     public synchronized String sendHex(String hexString) throws IOException{
         log.info("hexString:{}",hexString);
         //超过2分钟不再发送了
-        redisTemplate.opsForValue().set(OUT_HEX, hexString.substring(6, 14), Duration.ofMillis(2000L));
+        dao.save(hexString.substring(6, 14));
         //发送命令后报警一声
         gpioService.sendSound(1);
         return send(hexString);
@@ -76,20 +75,8 @@ public class SerialUtils {
                 log.info("发送射频返回的值：" + event.getHexByteString());
                 //返回值与原值比对，如果命令是发送的就不重新发送
                 //先查redis中是否有这个值
-                Object o = redisTemplate.opsForValue().get(OUT_HEX);
-                if (o != null) {
-                    if (event.getHexByteString().replaceAll(",", "").equals(o.toString())) {
-                        redisTemplate.delete(OUT_HEX);
-                        log.info("发送成功");
-                    } else {
-                        //没有比对成功重新发送
-                        log.info("发送不成功，重新发送。");
-                        Thread.sleep(10L);
-                        sendHex(hexString);
-                    }
-
-                }
-            } catch (IOException | InterruptedException e) {
+               dao.delete(hexString);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         });
@@ -123,7 +110,6 @@ public class SerialUtils {
                 .flowControl(FlowControl.NONE);
         console.println("inCom==========" + inCom);
         serial.open(config);
-        console.title("<-- The Pi4J Project -->", "Serial start");
         new Thread(() -> {
             while (true) {
                 byte[] read = new byte[0];
