@@ -18,6 +18,7 @@ spring:
   datasource:
     #url连接根据数据库实际地址建立
 #    url: jdbc:sqlite:C:/sqlite/piHome.db
+    #注意jdbc:sqlite:后跟的实际路径和数据库名称，根据实际位置可以更改
     url: jdbc:sqlite:/home/pi/piHome.db
     driver-class-name: org.sqlite.JDBC
 
